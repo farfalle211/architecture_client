@@ -10,16 +10,40 @@ class Building
   end
 
   def self.find(input_id)
-
     response = HTTP.get("http://localhost:3000/api/buildings/#{input_id}")
     building_hash = response.parse
     Building.new(building_hash)
-
-    #return the building instance with the id of input_id
   end
 
-  def method_name
-    
+  def self.all
+    response = HTTP.get("http://localhost:3000/api/buildings")
+    building_array = response.parse
+
+    all_building_objects = []
+    building_array.each do |building| 
+      all_building_objects << Building.new(building)
+    end
+    all_building_objects
+  end
+
+  def self.create(params_hash)
+    response = HTTP.post(
+                         "http://localhost:3000/api/buildings", 
+                         form: params_hash
+                        )
+    new_building = response.parse
+    Building.new(new_building)
+  end 
+
+  def update(input_hash)
+    response = HTTP.patch(
+                          "http://localhost:3000/api/buildings/#{id}", 
+                          form: input_hash
+                          )
+  end
+
+  def destroy
+    response = HTTP.delete("http://localhost:3000/api/buildings/#{id}")
   end
 
 end
